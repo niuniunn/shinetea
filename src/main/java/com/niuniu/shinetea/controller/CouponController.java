@@ -114,7 +114,7 @@ public class CouponController {
             buyerCoupon.setCouponStatus(BuyerCouponStatusEnum.UNUSED_COUPON.getCode());
             buyerCouponService.save(buyerCoupon);
             //扣除积分
-            memberInfoService.updatePoints(memberId,points);
+            memberInfoService.updatePoints(memberId,-points);
             return ResultVOUtil.success();
         } else {
             //积分不足

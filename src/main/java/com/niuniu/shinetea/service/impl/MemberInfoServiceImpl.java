@@ -42,12 +42,12 @@ public class MemberInfoServiceImpl implements MemberInfoService {
     }
 
     @Override
-    public MemberInfo updatePoints(Integer memberId, Integer points) {
+    public void updatePoints(Integer memberId, Integer points) {
         MemberInfo memberInfo = repository.findById(memberId).orElse(null);
         if(memberInfo == null) {
             throw new ShineTeaException(ResultEnum.USER_NOT_EXIST);
         }
-        memberInfo.setPoints(memberInfo.getPoints() - points);
-        return repository.save(memberInfo);
+        memberInfo.setPoints(memberInfo.getPoints() + points);
+        repository.save(memberInfo);
     }
 }

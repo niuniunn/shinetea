@@ -14,5 +14,5 @@ public interface MemberInfoService {
 
     MemberInfo findById(Integer id);
 
-    MemberInfo updatePoints(Integer memberId, Integer points);
+    void updatePoints(Integer memberId, Integer points);
 }
