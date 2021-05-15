@@ -3,6 +3,7 @@ package com.niuniu.shinetea.service.impl;
 import com.niuniu.shinetea.dataobject.SellerCoupon;
 import com.niuniu.shinetea.enums.OrderTypeEnum;
 import com.niuniu.shinetea.utils.KeyUtil;
+import org.junit.Assert;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -36,5 +37,11 @@ public class SellerCouponServiceImplTest {
     @Test
     public void updateStatus() {
         sellerCouponService.updateStatus("dmqWUZ7kPiqTXgDk");
+    }
+
+    @Test
+    public void findByCouponCode() {
+        SellerCoupon sellerCoupon = sellerCouponService.findByCouponCode("Mq7n0APj35Xzu8d2");
+        Assert.assertNotNull(sellerCoupon);
     }
 }

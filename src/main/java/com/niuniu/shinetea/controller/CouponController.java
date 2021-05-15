@@ -1,15 +1,19 @@
 package com.niuniu.shinetea.controller;
 
 import com.niuniu.shinetea.VO.ResultVO;
+import com.niuniu.shinetea.dataobject.BuyerCoupon;
 import com.niuniu.shinetea.dataobject.SellerCoupon;
-import com.niuniu.shinetea.enums.OrderTypeEnum;
+import com.niuniu.shinetea.enums.BuyerCouponStatusEnum;
 import com.niuniu.shinetea.enums.ResultEnum;
+import com.niuniu.shinetea.enums.SellerCouponStatusEnum;
 import com.niuniu.shinetea.exception.ShineTeaException;
 import com.niuniu.shinetea.form.CouponForm;
+import com.niuniu.shinetea.service.impl.BuyerCouponServiceImpl;
 import com.niuniu.shinetea.service.impl.SellerCouponServiceImpl;
 import com.niuniu.shinetea.utils.KeyUtil;
 import com.niuniu.shinetea.utils.ResultVOUtil;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -18,7 +22,6 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import javax.validation.Valid;
-import java.math.BigDecimal;
 import java.util.Objects;
 
 @RestController
@@ -28,6 +31,9 @@ public class CouponController {
 
     @Autowired
     SellerCouponServiceImpl sellerCouponService;
+
+    @Autowired
+    BuyerCouponServiceImpl buyerCouponService;
 
     @PostMapping("/create")
     public ResultVO create(@Valid CouponForm couponForm,
@@ -50,9 +56,32 @@ public class CouponController {
     }
 
     //通过优惠码兑换
-    /*@PostMapping("/receive1")
+    @PostMapping("/receive1")
     public ResultVO receive1(@RequestParam("couponCode") String couponCode,
                              @RequestParam("memberId") Integer memberId) {
+        //查找该优惠码对应的优惠券是否存在
+        SellerCoupon sellerCoupon = sellerCouponService.findByCouponCode(couponCode);
+        if(sellerCoupon == null) {
+            return ResultVOUtil.error(ResultEnum.COUPON_NOT_EXIST.getCode(),ResultEnum.COUPON_NOT_EXIST.getMessage());
+        } else {
+            // 检查状态是否为未领取
+            if(sellerCoupon.getCouponStatus().equals(SellerCouponStatusEnum.COUPON_UNRECEIVED.getCode())) {
+                //未领取  创建一条BuyerCoupon
+                BuyerCoupon buyerCoupon = new BuyerCoupon();
+                BeanUtils.copyProperties(sellerCoupon, buyerCoupon);
+                buyerCoupon.setCouponId(null);
+                buyerCoupon.setMemberId(memberId);
+                buyerCoupon.setCouponStatus(BuyerCouponStatusEnum.UNUSED_COUPON.getCode());
+                buyerCouponService.save(buyerCoupon);
+                //更新sellerCoupon的状态为已领取  并返回领取成功
+                sellerCoupon.setCouponStatus(SellerCouponStatusEnum.COUPON_RECEIVED.getCode());
+                sellerCouponService.save(sellerCoupon);
+                return ResultVOUtil.success();
+            } else {
+                //已领取  返回该优惠码已使用
+                return ResultVOUtil.error(ResultEnum.COUPON_CODE_USED.getCode(), ResultEnum.COUPON_CODE_USED.getMessage());
+            }
+        }
 
-    }*/
+    }
 }

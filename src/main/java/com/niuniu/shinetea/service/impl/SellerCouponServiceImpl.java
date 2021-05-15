@@ -29,4 +29,9 @@ public class SellerCouponServiceImpl implements SellerCouponService {
         sellerCoupon.setCouponStatus(SellerCouponStatusEnum.COUPON_RECEIVED.getCode());
         repository.save(sellerCoupon);
     }
+
+    @Override
+    public SellerCoupon findByCouponCode(String couponCode) {
+        return repository.findByCouponCode(couponCode);
+    }
 }

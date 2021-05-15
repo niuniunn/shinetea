@@ -8,4 +8,5 @@ public interface SellerCouponService {
 
     void updateStatus(String couponCode);
 
+    SellerCoupon findByCouponCode(String couponCode);
 }

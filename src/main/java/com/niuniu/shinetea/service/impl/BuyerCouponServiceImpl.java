@@ -13,7 +13,7 @@ import java.util.Date;
 import java.util.List;
 
 @Service
-public class BuyerCouponService implements com.niuniu.shinetea.service.BuyerCouponService {
+public class BuyerCouponServiceImpl implements com.niuniu.shinetea.service.BuyerCouponService {
 
     @Autowired
     private BuyerCouponRepository repository;

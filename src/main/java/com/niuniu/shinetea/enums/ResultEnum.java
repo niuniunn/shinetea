@@ -17,6 +17,7 @@ public enum ResultEnum {
     CART_EMPTY(10, "购物车不能为空"),
     ORDER_OWNER_ERROR(11, "订单不属于当前用户"),
     COUPON_NOT_EXIST(12, "优惠券不存在"),
+    COUPON_CODE_USED(13, "优惠码已使用"),
     ;
     private Integer code;
     private String message;
