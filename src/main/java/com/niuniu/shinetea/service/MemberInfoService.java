@@ -13,4 +13,6 @@ public interface MemberInfoService {
     MemberInfo save(MemberInfo memberInfo);
 
     MemberInfo findById(Integer id);
+
+    MemberInfo updatePoints(Integer memberId, Integer points);
 }

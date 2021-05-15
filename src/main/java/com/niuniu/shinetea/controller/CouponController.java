@@ -2,6 +2,7 @@ package com.niuniu.shinetea.controller;
 
 import com.niuniu.shinetea.VO.ResultVO;
 import com.niuniu.shinetea.dataobject.BuyerCoupon;
+import com.niuniu.shinetea.dataobject.MemberInfo;
 import com.niuniu.shinetea.dataobject.SellerCoupon;
 import com.niuniu.shinetea.enums.BuyerCouponStatusEnum;
 import com.niuniu.shinetea.enums.ResultEnum;
@@ -9,6 +10,7 @@ import com.niuniu.shinetea.enums.SellerCouponStatusEnum;
 import com.niuniu.shinetea.exception.ShineTeaException;
 import com.niuniu.shinetea.form.CouponForm;
 import com.niuniu.shinetea.service.impl.BuyerCouponServiceImpl;
+import com.niuniu.shinetea.service.impl.MemberInfoServiceImpl;
 import com.niuniu.shinetea.service.impl.SellerCouponServiceImpl;
 import com.niuniu.shinetea.utils.KeyUtil;
 import com.niuniu.shinetea.utils.ResultVOUtil;
@@ -34,6 +36,9 @@ public class CouponController {
 
     @Autowired
     BuyerCouponServiceImpl buyerCouponService;
+
+    @Autowired
+    MemberInfoServiceImpl memberInfoService;
 
     @PostMapping("/create")
     public ResultVO create(@Valid CouponForm couponForm,
@@ -82,6 +87,40 @@ public class CouponController {
                 return ResultVOUtil.error(ResultEnum.COUPON_CODE_USED.getCode(), ResultEnum.COUPON_CODE_USED.getMessage());
             }
         }
+
+    }
+
+    //通过积分商城兑换
+    @PostMapping("/receive2")
+    public ResultVO receive2(@Valid CouponForm couponForm,
+                             @RequestParam("memberId") Integer memberId,
+                             @RequestParam("points") Integer points,
+                             BindingResult bindingResult) {
+        if(bindingResult.hasErrors()) {
+            log.error("【领取优惠券】参数不正确，couponForm={}",couponForm);
+            throw new ShineTeaException(ResultEnum.PARAM_ERROR.getCode(),
+                    Objects.requireNonNull(bindingResult.getFieldError()).getDefaultMessage());
+        }
+        //检查用户积分是否足够
+        MemberInfo memberInfo = memberInfoService.findById(memberId);
+        if(memberInfo == null) {
+            return ResultVOUtil.error(ResultEnum.USER_NOT_EXIST.getCode(), ResultEnum.USER_NOT_EXIST.getMessage());
+        }
+        if(memberInfo.getPoints() >= points) {
+            //积分足够 创建buyercoupon
+            BuyerCoupon buyerCoupon = new BuyerCoupon();
+            BeanUtils.copyProperties(couponForm, buyerCoupon);
+            buyerCoupon.setMemberId(memberId);
+            buyerCoupon.setCouponStatus(BuyerCouponStatusEnum.UNUSED_COUPON.getCode());
+            buyerCouponService.save(buyerCoupon);
+            //扣除积分
+            memberInfoService.updatePoints(memberId,points);
+            return ResultVOUtil.success();
+        } else {
+            //积分不足
+            return ResultVOUtil.error(ResultEnum.POINTS_NOT_ENOUGH.getCode(), ResultEnum.POINTS_NOT_ENOUGH.getMessage());
+        }
+
 
     }
 }

@@ -1,6 +1,8 @@
 package com.niuniu.shinetea.service.impl;
 
 import com.niuniu.shinetea.dataobject.MemberInfo;
+import com.niuniu.shinetea.enums.ResultEnum;
+import com.niuniu.shinetea.exception.ShineTeaException;
 import com.niuniu.shinetea.repository.MemberInfoRepository;
 import com.niuniu.shinetea.service.MemberInfoService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -12,7 +14,7 @@ import org.springframework.stereotype.Service;
 import java.util.List;
 
 @Service
-public class MemberInfoImpl implements MemberInfoService {
+public class MemberInfoServiceImpl implements MemberInfoService {
 
     @Autowired
     private MemberInfoRepository repository;
@@ -37,5 +39,15 @@ public class MemberInfoImpl implements MemberInfoService {
     @Override
     public MemberInfo findById(Integer id) {
         return repository.findById(id).orElse(null);
+    }
+
+    @Override
+    public MemberInfo updatePoints(Integer memberId, Integer points) {
+        MemberInfo memberInfo = repository.findById(memberId).orElse(null);
+        if(memberInfo == null) {
+            throw new ShineTeaException(ResultEnum.USER_NOT_EXIST);
+        }
+        memberInfo.setPoints(memberInfo.getPoints() - points);
+        return repository.save(memberInfo);
     }
 }

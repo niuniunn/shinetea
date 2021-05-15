@@ -18,6 +18,7 @@ public enum ResultEnum {
     ORDER_OWNER_ERROR(11, "订单不属于当前用户"),
     COUPON_NOT_EXIST(12, "优惠券不存在"),
     COUPON_CODE_USED(13, "优惠码已使用"),
+    POINTS_NOT_ENOUGH(14, "积分不足"),
     ;
     private Integer code;
     private String message;
