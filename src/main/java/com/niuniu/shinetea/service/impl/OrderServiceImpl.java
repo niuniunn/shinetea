@@ -1,6 +1,7 @@
 package com.niuniu.shinetea.service.impl;
 
 import com.niuniu.shinetea.converter.OrderMaster2OrderDTOConverter;
+import com.niuniu.shinetea.dataobject.MemberInfo;
 import com.niuniu.shinetea.dataobject.OrderDetail;
 import com.niuniu.shinetea.dataobject.OrderMaster;
 import com.niuniu.shinetea.dataobject.ProductInfo;
@@ -69,8 +70,6 @@ public class OrderServiceImpl implements OrderService {
         orderMaster.setOrderStatus(OrderStatusEnum.NEW.getCode());
         orderMaster.setPayStatus(PayStatusEnum.SUCCESS.getCode());
 
-        //个人积分增加
-        //使用了优惠券进行扣除
         orderMasterRepository.save(orderMaster);
         return orderDTO;
     }

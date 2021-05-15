@@ -120,7 +120,5 @@ public class CouponController {
             //积分不足
             return ResultVOUtil.error(ResultEnum.POINTS_NOT_ENOUGH.getCode(), ResultEnum.POINTS_NOT_ENOUGH.getMessage());
         }
-
-
     }
 }

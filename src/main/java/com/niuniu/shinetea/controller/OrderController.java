@@ -2,14 +2,15 @@ package com.niuniu.shinetea.controller;
 
 import com.niuniu.shinetea.VO.ResultVO;
 import com.niuniu.shinetea.converter.OrderForm2OrderDTOConverter;
+import com.niuniu.shinetea.dataobject.MemberInfo;
 import com.niuniu.shinetea.dto.OrderDTO;
 import com.niuniu.shinetea.dto.OrderThumbDTO;
 import com.niuniu.shinetea.dto.PageDTO;
 import com.niuniu.shinetea.enums.ResultEnum;
 import com.niuniu.shinetea.exception.ShineTeaException;
 import com.niuniu.shinetea.form.OrderForm;
-import com.niuniu.shinetea.service.BuyerService;
-import com.niuniu.shinetea.service.OrderService;
+import com.niuniu.shinetea.service.*;
+import com.niuniu.shinetea.service.impl.BuyerCouponServiceImpl;
 import com.niuniu.shinetea.utils.ResultVOUtil;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -39,6 +40,12 @@ public class OrderController {
     @Autowired
     private BuyerService buyerService;
 
+    @Autowired
+    private MemberInfoService memberInfoService;
+
+    @Autowired
+    private BuyerCouponServiceImpl buyerCouponService;
+
     //创建订单
     @PostMapping("/create")
     public ResultVO create(@Valid OrderForm orderForm,
@@ -56,6 +63,13 @@ public class OrderController {
         //外送订单 收货地址不能为空
 
         OrderDTO createResult = orderService.create(orderDTO);
+        //积分增加
+        MemberInfo memberInfo = memberInfoService.findByOpenid(orderForm.getBuyerOpenid());
+        memberInfoService.updatePoints(memberInfo.getMemberId(),orderForm.getActualPayment().intValue());
+        //使用了优惠券进行状态更改
+        if(orderForm.getCouponId() != null) {
+            buyerCouponService.useCoupon(orderForm.getCouponId());
+        }
         Map<String,String> map = new HashMap<>();
         map.put("orderId", createResult.getOrderId());
         return ResultVOUtil.success(map);
