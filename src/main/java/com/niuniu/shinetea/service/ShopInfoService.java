@@ -19,4 +19,6 @@ public interface ShopInfoService {
     void updateStatus(Integer shopId, Integer isOpen);
 
     Page<ShopInfo> findByNameAndAddressAndStatus(String shopName, String address, Integer isOpen, Pageable pageable);
+
+    Page<ShopInfo> findByNameAndAddress(String shopName, String address, Pageable pageable);
 }

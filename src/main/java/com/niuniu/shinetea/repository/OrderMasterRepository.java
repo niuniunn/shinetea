@@ -15,11 +15,18 @@ public interface OrderMasterRepository extends JpaRepository<OrderMaster, String
     @Query(
             value = "select * from order_master " +
                     "where order_id like concat('%',?1,'%') " +
-                    "and order_type = ?2 " +
-                    "and order_status = ?3 " +
-                    "and create_time between ?4 and ?5 ",
+                    "and order_status = ?2 " +
+                    "and create_time between ?3 and ?4 ",
             nativeQuery = true
     )
-    Page<OrderMaster> findByConditions(String orderId, Integer orderType, Integer orderStatus,
+    Page<OrderMaster> findByConditions(String orderId, Integer orderStatus,
                                        Date startTime, Date endTime, Pageable pageable);
+
+    @Query(
+            value = "select * from order_master " +
+                    "where order_id like concat('%',?1,'%') " +
+                    "and create_time between ?2 and ?3 ",
+            nativeQuery = true
+    )
+    Page<OrderMaster> findByConditionsExceptOrderStatus(String orderId, Date startTime, Date endTime, Pageable pageable);
 }

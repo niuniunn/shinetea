@@ -56,8 +56,8 @@ public class CouponController {
         sellerCoupon.setEndTime(couponForm.getEndTime());
         sellerCoupon.setOrderType(couponForm.getOrderType());
 
-        sellerCouponService.save(sellerCoupon);
-        return ResultVOUtil.success();
+        SellerCoupon result = sellerCouponService.save(sellerCoupon);
+        return ResultVOUtil.success(result.getCouponCode());
     }
 
     //通过优惠码兑换

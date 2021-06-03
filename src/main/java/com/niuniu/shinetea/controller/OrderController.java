@@ -25,9 +25,9 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import javax.validation.Valid;
-import java.util.HashMap;
-import java.util.Map;
-import java.util.Objects;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
+import java.util.*;
 
 @RestController
 @RequestMapping("/order")
@@ -96,11 +96,18 @@ public class OrderController {
         return ResultVOUtil.success(pageDTO);
     }
 
-    //订单详情
+    //小程序用户查询订单详情
     @PostMapping("/detail")
     public ResultVO<OrderDTO> detail(@RequestParam("openid") String openid,
                                      @RequestParam("orderId") String orderId) {
         OrderDTO orderDTO = buyerService.findOrderOne(openid, orderId);
+        return ResultVOUtil.success(orderDTO);
+    }
+
+    //管理员查询订单详情
+    @PostMapping("/managedetail")
+    public ResultVO managedetail(@RequestParam("orderId") String orderId) {
+        OrderDTO orderDTO = orderService.findById(orderId);
         return ResultVOUtil.success(orderDTO);
     }
 
@@ -113,5 +120,31 @@ public class OrderController {
         }
         orderService.updateStatus(orderId, orderStatus);
         return ResultVOUtil.success();
+    }
+
+    //分页条件查询
+    @PostMapping("/page")
+    public ResultVO pageList(@RequestParam("orderId") String orderId,
+                             @RequestParam("startTime") String startTime,
+                             @RequestParam("endTime") String endTime,
+                             @RequestParam("orderStatus") Integer orderStatus,
+                             @RequestParam(value = "page", defaultValue = "1") Integer page,
+                             @RequestParam(value = "size", defaultValue = "10") Integer size) throws ParseException {
+        PageRequest request = PageRequest.of(page-1, size);
+        Page<OrderDTO> orderDTOPage;
+
+        Date time1 = new SimpleDateFormat("yyyy-MM-dd").parse(startTime);
+        Date time2 = new SimpleDateFormat("yyyy-MM-dd").parse(endTime);
+        if(orderStatus == -1) {
+            orderDTOPage = orderService.findByConditionsExceptOrderStatus(orderId, time1, time2,request);
+        } else {
+            orderDTOPage = orderService.findByConditions(orderId, orderStatus, time1, time2, request);
+        }
+        PageDTO pageDTO = new PageDTO();
+        pageDTO.setData(orderDTOPage.getContent());
+        pageDTO.setPage(page);
+        pageDTO.setSize(size);
+        pageDTO.setTotal(orderDTOPage.getTotalElements());
+        return ResultVOUtil.success(pageDTO);
     }
 }

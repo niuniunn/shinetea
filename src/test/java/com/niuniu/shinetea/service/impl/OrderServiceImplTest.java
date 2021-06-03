@@ -21,6 +21,7 @@ import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
+import java.util.TimeZone;
 
 import static org.junit.Assert.*;
 
@@ -90,11 +91,12 @@ public class OrderServiceImplTest {
     @Test
     public void findByConditions() throws ParseException {
         PageRequest request = PageRequest.of(0,2);
-        String startTime = "2021-01-25";
-        String endTime = "2021-05-09";   //查出来的信息包括开始日期 不包含结束日期
+        String startTime = "2021-05-10";
+        String endTime = "2021-05-21";   //查出来的信息包括开始日期 不包含结束日期
         Date time1 = new SimpleDateFormat("yyyy-MM-dd").parse(startTime);
         Date time2 = new SimpleDateFormat("yyyy-MM-dd").parse(endTime);
-        Page<OrderDTO> orderDTOPage = orderService.findByConditions("162", 1, 0, time1, time2, request);
+
+        Page<OrderDTO> orderDTOPage = orderService.findByConditions("162", 0, time1, time2, request);
         Assert.assertNotEquals(0, orderDTOPage.getTotalElements());
     }
 

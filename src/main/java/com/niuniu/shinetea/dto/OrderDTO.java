@@ -1,5 +1,6 @@
 package com.niuniu.shinetea.dto;
 
+import com.fasterxml.jackson.annotation.JsonFormat;
 import com.niuniu.shinetea.dataobject.OrderDetail;
 import lombok.Data;
 
@@ -49,6 +50,7 @@ public class OrderDTO {
 
     private Integer payStatus;
 
+    @JsonFormat(shape=JsonFormat.Shape.STRING,pattern="yyyy-MM-dd HH:mm:ss",timezone="GMT")
     private Date createTime;
 
     private List<OrderDetail> orderDetailList;

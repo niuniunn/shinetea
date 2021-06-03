@@ -2,6 +2,7 @@ package com.niuniu.shinetea.dataobject;
 
 import lombok.Data;
 import org.hibernate.annotations.DynamicUpdate;
+import org.hibernate.annotations.Proxy;
 
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
@@ -11,6 +12,7 @@ import javax.persistence.Id;
 @Entity
 @DynamicUpdate
 @Data
+@Proxy(lazy = false)
 public class ProductCategory {
 
     @Id

@@ -115,8 +115,16 @@ public class OrderServiceImpl implements OrderService {
     }
 
     @Override
-    public Page<OrderDTO> findByConditions(String orderId, Integer orderType, Integer orderStatus, Date startTime, Date endTime, Pageable pageable) {
-        Page<OrderMaster> orderMasterPage = orderMasterRepository.findByConditions(orderId, orderType, orderStatus, startTime, endTime, pageable);
+    public Page<OrderDTO> findByConditions(String orderId, Integer orderStatus, Date startTime, Date endTime, Pageable pageable) {
+        Page<OrderMaster> orderMasterPage = orderMasterRepository.findByConditions(orderId, orderStatus, startTime, endTime, pageable);
+        List<OrderDTO> orderDTOList = OrderMaster2OrderDTOConverter.convert(orderMasterPage.getContent());
+
+        return new PageImpl<>(orderDTOList,pageable,orderMasterPage.getTotalElements());
+    }
+
+    @Override
+    public Page<OrderDTO> findByConditionsExceptOrderStatus(String orderId, Date startTime, Date endTime, Pageable pageable) {
+        Page<OrderMaster> orderMasterPage = orderMasterRepository.findByConditionsExceptOrderStatus(orderId, startTime, endTime, pageable);
         List<OrderDTO> orderDTOList = OrderMaster2OrderDTOConverter.convert(orderMasterPage.getContent());
 
         return new PageImpl<>(orderDTOList,pageable,orderMasterPage.getTotalElements());

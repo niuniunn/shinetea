@@ -44,6 +44,13 @@ public class ShopInfoServiceImpl implements ShopInfoService {
     }
 
     @Override
+    public Page<ShopInfo> findByNameAndAddress(String shopName, String address, Pageable pageable) {
+        Page<ShopInfo> shopInfoPage = repository.findByNameAndAddress(shopName, address, pageable);
+        List<ShopInfo> shopInfoList = shopInfoPage.getContent();
+        return new PageImpl<>(shopInfoList,pageable,shopInfoPage.getTotalElements());
+    }
+
+    @Override
     public void delete(Integer shopId) {
         repository.deleteById(shopId);
     }

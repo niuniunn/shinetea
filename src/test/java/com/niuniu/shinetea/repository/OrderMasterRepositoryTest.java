@@ -42,7 +42,7 @@ public class OrderMasterRepositoryTest {
         Date time1 = new SimpleDateFormat("yyyy-MM-dd").parse(startTime);
         Date time2 = new SimpleDateFormat("yyyy-MM-dd").parse(endTime);
         PageRequest request = PageRequest.of(0,2);
-        Page<OrderMaster> orderMasterPage = repository.findByConditions("15826",1,0,time1,time2,request);
+        Page<OrderMaster> orderMasterPage = repository.findByConditions("15826",0,time1,time2,request);
         System.out.println(orderMasterPage.getTotalElements());
         Assert.assertNotEquals(0,orderMasterPage.getTotalElements());
     }

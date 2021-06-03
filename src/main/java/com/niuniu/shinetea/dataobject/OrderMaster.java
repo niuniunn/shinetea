@@ -4,6 +4,7 @@ import com.niuniu.shinetea.enums.OrderStatusEnum;
 import com.niuniu.shinetea.enums.PayStatusEnum;
 import lombok.Data;
 import org.hibernate.annotations.DynamicUpdate;
+import org.hibernate.annotations.Proxy;
 
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
@@ -15,6 +16,7 @@ import java.util.Date;
 @Entity
 @DynamicUpdate
 @Data
+@Proxy(lazy = false)
 public class OrderMaster {
 
     @Id

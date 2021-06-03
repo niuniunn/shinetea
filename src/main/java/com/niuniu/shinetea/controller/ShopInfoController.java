@@ -36,7 +36,13 @@ public class ShopInfoController {
                                          @RequestParam(value = "page", defaultValue = "1") Integer page,
                                          @RequestParam(value = "size", defaultValue = "10") Integer size) {
         PageRequest request = PageRequest.of(page-1, size);
-        Page<ShopInfo> shopInfoPage = shopInfoService.findByNameAndAddressAndStatus(name, address, isOpen, request);
+        Page<ShopInfo> shopInfoPage;
+        if(isOpen == -1) {
+            //查询全部
+            shopInfoPage = shopInfoService.findByNameAndAddress(name, address, request);
+        } else {
+            shopInfoPage = shopInfoService.findByNameAndAddressAndStatus(name, address, isOpen, request);
+        }
         PageDTO pageDTO = new PageDTO();
         pageDTO.setData(shopInfoPage.getContent());
         pageDTO.setPage(page);
@@ -106,7 +112,7 @@ public class ShopInfoController {
     }
 
     //删除门店
-    @UserLoginToken
+//    @UserLoginToken
     @PostMapping("/del")
     public ResultVO delete(@RequestParam("id") Integer id) {
         if(shopInfoService.findById(id) == null) {

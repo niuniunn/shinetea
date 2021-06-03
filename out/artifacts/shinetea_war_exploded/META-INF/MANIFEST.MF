@@ -1,0 +1,9 @@
+Manifest-Version: 1.0
+Created-By: IntelliJ IDEA
+Built-By: niuniu
+Build-Jdk: version 1.8.0_171
+Implementation-Title: shinetea
+Implementation-Version: 0.0.1-SNAPSHOT
+Implementation-Vendor-Id: com.niuniu
+Main-Class: ${start-class}
+

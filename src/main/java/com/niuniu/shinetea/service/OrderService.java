@@ -17,8 +17,10 @@ public interface OrderService {
     Page<OrderThumbDTO> findList(String buyerOpenid, Pageable pageable);
 
     /*管理员条件查询订单*/
-    Page<OrderDTO> findByConditions(String orderId, Integer orderType, Integer orderStatus,
+    Page<OrderDTO> findByConditions(String orderId, Integer orderStatus,
                                     Date startTime, Date endTime, Pageable pageable);
+
+    Page<OrderDTO> findByConditionsExceptOrderStatus(String orderId, Date startTime, Date endTime, Pageable pageable);
 
     OrderMaster updateStatus(String orderId, Integer orderStatus);
 }

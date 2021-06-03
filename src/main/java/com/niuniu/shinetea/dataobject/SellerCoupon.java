@@ -3,6 +3,7 @@ package com.niuniu.shinetea.dataobject;
 import com.niuniu.shinetea.enums.SellerCouponStatusEnum;
 import lombok.Data;
 import org.hibernate.annotations.DynamicUpdate;
+import org.hibernate.annotations.Proxy;
 
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
@@ -13,6 +14,7 @@ import java.math.BigDecimal;
 @Entity
 @DynamicUpdate
 @Data
+@Proxy(lazy = false)
 public class SellerCoupon {
 
     @Id
