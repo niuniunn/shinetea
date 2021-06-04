@@ -9,35 +9,24 @@ import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
-import java.math.BigDecimal;
 import java.util.Date;
 
 @Entity
 @DynamicUpdate
 @Data
 @Proxy(lazy = false)
-public class BuyerCoupon {
+public class PointRecord {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Integer couponId;
+    private Integer recordId;
 
     private Integer memberId;
 
-    private BigDecimal useCondition;
+    private Integer variation;
 
-    private String startTime;
-
-    private String endTime;
-
-    private BigDecimal discount;
-
-    private Integer orderType;
-
-    private Integer couponStatus;
+    private String reason;
 
     @JsonFormat(shape=JsonFormat.Shape.STRING,pattern="yyyy-MM-dd HH:mm:ss",timezone="GMT")
-    private Date receiveTime;
-
-    private String useTime;
+    private Date createTime;
 }

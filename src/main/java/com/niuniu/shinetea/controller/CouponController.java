@@ -3,6 +3,7 @@ package com.niuniu.shinetea.controller;
 import com.niuniu.shinetea.VO.ResultVO;
 import com.niuniu.shinetea.dataobject.BuyerCoupon;
 import com.niuniu.shinetea.dataobject.MemberInfo;
+import com.niuniu.shinetea.dataobject.PointRecord;
 import com.niuniu.shinetea.dataobject.SellerCoupon;
 import com.niuniu.shinetea.enums.BuyerCouponStatusEnum;
 import com.niuniu.shinetea.enums.ResultEnum;
@@ -11,6 +12,7 @@ import com.niuniu.shinetea.exception.ShineTeaException;
 import com.niuniu.shinetea.form.CouponForm;
 import com.niuniu.shinetea.service.impl.BuyerCouponServiceImpl;
 import com.niuniu.shinetea.service.impl.MemberInfoServiceImpl;
+import com.niuniu.shinetea.service.impl.PointRecordServiceImpl;
 import com.niuniu.shinetea.service.impl.SellerCouponServiceImpl;
 import com.niuniu.shinetea.utils.KeyUtil;
 import com.niuniu.shinetea.utils.ResultVOUtil;
@@ -32,13 +34,16 @@ import java.util.Objects;
 public class CouponController {
 
     @Autowired
-    SellerCouponServiceImpl sellerCouponService;
+    private SellerCouponServiceImpl sellerCouponService;
 
     @Autowired
-    BuyerCouponServiceImpl buyerCouponService;
+    private BuyerCouponServiceImpl buyerCouponService;
 
     @Autowired
-    MemberInfoServiceImpl memberInfoService;
+    private MemberInfoServiceImpl memberInfoService;
+
+    @Autowired
+    private PointRecordServiceImpl pointRecordService;
 
     @PostMapping("/create")
     public ResultVO create(@Valid CouponForm couponForm,
@@ -115,10 +120,23 @@ public class CouponController {
             buyerCouponService.save(buyerCoupon);
             //扣除积分
             memberInfoService.updatePoints(memberId,-points);
+
+            //写入一条积分记录
+            PointRecord pointRecord = new PointRecord();
+            pointRecord.setMemberId(memberInfo.getMemberId());
+            pointRecord.setReason("积分商城兑换");
+            pointRecord.setVariation(-points);
+            pointRecordService.save(pointRecord);
+
             return ResultVOUtil.success();
         } else {
             //积分不足
             return ResultVOUtil.error(ResultEnum.POINTS_NOT_ENOUGH.getCode(), ResultEnum.POINTS_NOT_ENOUGH.getMessage());
         }
+    }
+
+    @PostMapping("/list")
+    public ResultVO list(@RequestParam("memberId") Integer memberId) {
+        return  ResultVOUtil.success(buyerCouponService.findByMemberId(memberId));
     }
 }

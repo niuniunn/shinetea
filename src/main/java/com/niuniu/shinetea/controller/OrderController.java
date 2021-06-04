@@ -3,6 +3,7 @@ package com.niuniu.shinetea.controller;
 import com.niuniu.shinetea.VO.ResultVO;
 import com.niuniu.shinetea.converter.OrderForm2OrderDTOConverter;
 import com.niuniu.shinetea.dataobject.MemberInfo;
+import com.niuniu.shinetea.dataobject.PointRecord;
 import com.niuniu.shinetea.dto.OrderDTO;
 import com.niuniu.shinetea.dto.OrderThumbDTO;
 import com.niuniu.shinetea.dto.PageDTO;
@@ -11,6 +12,7 @@ import com.niuniu.shinetea.exception.ShineTeaException;
 import com.niuniu.shinetea.form.OrderForm;
 import com.niuniu.shinetea.service.*;
 import com.niuniu.shinetea.service.impl.BuyerCouponServiceImpl;
+import com.niuniu.shinetea.service.impl.PointRecordServiceImpl;
 import com.niuniu.shinetea.utils.ResultVOUtil;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -46,6 +48,9 @@ public class OrderController {
     @Autowired
     private BuyerCouponServiceImpl buyerCouponService;
 
+    @Autowired
+    private PointRecordServiceImpl pointRecordService;
+
     //创建订单
     @PostMapping("/create")
     public ResultVO create(@Valid OrderForm orderForm,
@@ -66,6 +71,13 @@ public class OrderController {
         //积分增加
         MemberInfo memberInfo = memberInfoService.findByOpenid(orderForm.getBuyerOpenid());
         memberInfoService.updatePoints(memberInfo.getMemberId(),orderForm.getActualPayment().intValue());
+
+        //写入一条积分记录
+        PointRecord pointRecord = new PointRecord();
+        pointRecord.setMemberId(memberInfo.getMemberId());
+        pointRecord.setReason("购买商品");
+        pointRecord.setVariation(orderForm.getActualPayment().intValue());
+        pointRecordService.save(pointRecord);
         //使用了优惠券进行状态更改
         if(orderForm.getCouponId() != null) {
             buyerCouponService.useCoupon(orderForm.getCouponId());

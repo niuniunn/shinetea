@@ -19,6 +19,7 @@ public enum ResultEnum {
     COUPON_NOT_EXIST(12, "优惠券不存在"),
     COUPON_CODE_USED(13, "优惠码已使用"),
     POINTS_NOT_ENOUGH(14, "积分不足"),
+    ADDRESS_NOT_EXIST(15, "收货地址不存在"),
     ;
     private Integer code;
     private String message;
