@@ -1,5 +1,6 @@
 package com.niuniu.shinetea.dataobject;
 
+import com.fasterxml.jackson.annotation.JsonFormat;
 import com.niuniu.shinetea.enums.OrderStatusEnum;
 import com.niuniu.shinetea.enums.PayStatusEnum;
 import lombok.Data;
@@ -60,5 +61,6 @@ public class OrderMaster {
 
     private Integer payStatus = PayStatusEnum.SUCCESS.getCode();  //没有支付功能  默认直接支付成功
 
+    @JsonFormat(shape=JsonFormat.Shape.STRING,pattern="yyyy-MM-dd HH:mm:ss",timezone="GMT")
     private Date createTime;
 }

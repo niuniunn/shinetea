@@ -1,5 +1,6 @@
 package com.niuniu.shinetea.dto;
 
+import com.fasterxml.jackson.annotation.JsonFormat;
 import lombok.Data;
 
 import java.math.BigDecimal;
@@ -15,6 +16,7 @@ public class OrderThumbDTO {
 
     private Integer orderStatus;
 
+    @JsonFormat(shape=JsonFormat.Shape.STRING,pattern="yyyy-MM-dd HH:mm:ss",timezone="GMT")
     private Date createTime;
 
     private BigDecimal actualPayment;
